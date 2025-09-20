@@ -20,7 +20,4 @@ jobs:
           distribution: 'temurin'
 
       - name: Run tests with Maven
-        run: |
-          mvn clean test
-          # Si quieres ver los resultados de pruebas
-          mvn test --quietF
+        run: mvn clean test
