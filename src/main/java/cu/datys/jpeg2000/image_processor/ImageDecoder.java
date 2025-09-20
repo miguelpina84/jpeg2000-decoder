@@ -41,7 +41,7 @@ public class ImageDecoder {
      */
     public byte[] readAndProcessImage(byte[] imageData) throws IOException {
         if (imageData == null || imageData.length == 0) {
-            throw new IllegalArgumentException("Datos de imagen invalidos");
+            throw new IllegalArgumentException("Image data must not be null or empty");
         }
 
         // Detectar el MIME type de la imagen con Apache Tika
@@ -50,17 +50,17 @@ public class ImageDecoder {
 
         // Si la imagen no es JPEG2000, devolverla tal cual
         if (!Constants.JPEG2000_MIME_TYPE.equals(mimeType) && !Constants.JPEG2000_SCND_TYPE.equals(mimeType)) {
-            log.info("La imagen no es JPEG2000, se devuelve sin modificar");
+            log.info("Image is not JPEG2000, returning original data...");
             return imageData;
         }
 
-        log.info("Procesando imagen JPEG2000...");
+        log.info("Processed image JPEG2000...");
         try (ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
                 ImageInputStream iis = ImageIO.createImageInputStream(bais)) {
 
             Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
             if (!readers.hasNext()) {
-                throw new IOException("Formato de imagen no soportado");
+                throw new IOException("Image format not supported or no reader found for JPEG2000");
             }
 
             ImageReader reader = readers.next();
@@ -68,10 +68,10 @@ public class ImageDecoder {
                 reader.setInput(iis);
                 BufferedImage image = reader.read(0);
 
-                // Eliminar canal alfa si existe
+                // Remove alfa channel
                 BufferedImage processedImage = removeAlphaChannel(image);
 
-                // Convertir a byte array en formato JPG
+                // Convert to JPG byte array
                 return convertToByteArray(processedImage, "JPG");
 
             } finally {
