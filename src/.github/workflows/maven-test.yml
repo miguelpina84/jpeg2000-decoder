@@ -1,0 +1,24 @@
+name: Maven Test CI
+
+on:
+  push:
+    branches: [ feature/to_jpg ]
+  pull_request:
+    branches: [ feature/to_jpg ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Run tests with Maven
+        run: mvn test
